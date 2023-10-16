@@ -15,7 +15,7 @@ import CustomInput from '@/common/components/CustomInput';
 import CustomButton from '@/common/components/CustomButton';
 import SocialSignInButtons from '@/common/components/SocialSignInButtons';
 import { login } from '@/features/user/userSlice';
-import { router } from 'expo-router';
+
 export default function AuthScreen() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -37,10 +37,6 @@ export default function AuthScreen() {
         //     params: { username: data.username, password: data.password },
         // });
     };
-    const onSignUpPress = () => {
-        router.replace('SignUpScreen');
-    };
-
     return (
         <Screen
             style={{
@@ -49,10 +45,6 @@ export default function AuthScreen() {
                 justifyContent: 'center',
             }}
         >
-            <RNView style={styles.logoContainer}>
-                <Image source={Logo} style={styles.logo} resizeMode='contain' />
-            </RNView>
-
             <Text fontSize={24} fontFamily='SFHeavy'>
                 Moolah
             </Text>
@@ -86,11 +78,6 @@ export default function AuthScreen() {
                     onPress={handleSubmit(onSignInPress)}
                 />
                 <SocialSignInButtons />
-                <CustomButton
-                    text="Don't have an account? Create one"
-                    onPress={onSignUpPress}
-                    type='TERTIARY'
-                />
             </RNView>
         </Screen>
     );

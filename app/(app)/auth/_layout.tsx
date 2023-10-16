@@ -3,19 +3,19 @@ import useAppSelector from '@/common/hooks/useAppSelector';
 import { Redirect, Stack } from 'expo-router';
 
 export default function () {
-	const loggedIn = useAppSelector((state) => state.auth.loggedIn);
+    const loggedIn = useAppSelector((state) => state.user.loggedIn);
 
-	// If the user is logged in, redirect to the home page
-	if (loggedIn) {
-		return <Redirect href={'/'} />;
-	}
+    // If the user is logged in, redirect to the home page
+    if (loggedIn) {
+        return <Redirect href={'/'} />;
+    }
 
-	return (
-		<Stack
-			screenOptions={{
-				headerShown: false,
-				animation: 'slide_from_right',
-			}}
-		/>
-	);
+    return (
+        <Stack
+            screenOptions={{
+                headerShown: false,
+                animation: 'slide_from_right',
+            }}
+        />
+    );
 }

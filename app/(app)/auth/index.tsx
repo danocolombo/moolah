@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { Auth } from 'aws-amplify';
 import Screen from '@/common/components/Screen';
 import Text from '@/common/components/Text';
 import View from '@/common/components/View';
@@ -20,6 +21,11 @@ type RouterLinkProps = {
     pathname: string;
     params?: Record<string, string | undefined>;
 };
+type userAttributeProps = {
+    email: string;
+    email_verified: string;
+    preferred_username: string;
+};
 export default function AuthScreen() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -31,43 +37,76 @@ export default function AuthScreen() {
 
     const onSignInPress = async (data) => {
         console.log('onSignInPressed');
+        setLoading(false);
         if (loading) {
             return;
         }
         setLoading(true);
-        console.log('loading true');
-        // try {
-        //     const response = await Auth.signIn(data.username, data.password);
-        //     const signInData = {
-        //         signInUserSession: response.signInUserSession,
-        //     };
+        let alertPayload;
+        const username = 'mootwo';
+        const password = 'Password123!';
+        await Auth.signIn(username, password)
+            .then((user) => {
+                console.log('1');
+                if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+                    console.log('challenge this');
+                    const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
+                    console.log(requiredAttributes);
+                    Auth.completeNewPassword(
+                        username, // the Cognito User Object
+                        password,
+                        []
+                    )
+                        .then((user) => {
+                            // at this time the user is logged in if no MFA required
+                            console.log(user);
+                        })
+                        .catch((e) => {
+                            const alertPayload = {
+                                msg: 'Authentication failed. Please check your credentials',
+                                alertType: 'danger',
+                            };
+                            // setAlert(alertPayload);
+                            console.log(alertPayload);
+                            console.log(' need to return');
+                            console.log(user);
+                            // return;
+                        });
+                } else {
+                    console.log('the user is good...');
+                }
+            })
+            .catch((e) => {
+                switch (e.code) {
+                    case 'UserNotFoundException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                        break;
+                    case 'PasswordResetRequiredException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                        break;
+                    case 'NotAuthorizedException':
+                        alertPayload = {
+                            msg: e.message,
+                            alertType: 'danger',
+                        };
+                        break;
+                    default:
+                        alertPayload = {
+                            msg: 'Signin error: [' + e.message + ']',
+                            alertType: 'danger',
+                        };
+                        break;
+                }
+                console.log(alertPayload);
+            });
 
-        //     try {
-        //         const loginResults = await dispatch(loginUser(signInData));
-
-        //         const SUResults = await dispatch(
-        //             saveUserProfile(loginResults.payload.profile)
-        //         );
-
-        //         const defGroupsResults = await dispatch(
-        //             loadDefaultGroups({
-        //                 id: loginResults.payload.profile.activeOrg.id,
-        //             })
-        //         );
-        //         const getAllMeetingsResults = await dispatch(
-        //             getAllMeetings({
-        //                 orgId: loginResults.payload.profile.activeOrg.id,
-        //                 code: loginResults.payload.profile.activeOrg.code,
-        //             })
-        //         );
-
-        //         // You can now work with getAllMeetingsResults here if needed.
-        //     } catch (error) {
-        //         // Handle errors here.
-        //         setLoginError(error);
-        //         setShowLoginError(true);
-        //         throw new Error('Error occurred during sign-in');
-        //     }
+        setLoading(false);
 
         //     console.log('done with loginUser dispatch');
         // } catch (error) {

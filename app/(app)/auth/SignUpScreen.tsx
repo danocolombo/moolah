@@ -26,7 +26,11 @@ export default function AuthScreen() {
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const onSignInPress = async (data) => {
+    const onSignUpPress = async (data) => {
+        console.log('username:', data.username);
+        console.log('email:', data.email);
+        console.log('password:', data.password);
+        return;
         // if (loading) {
         //     return;
         // }
@@ -111,15 +115,15 @@ export default function AuthScreen() {
                     secureTextEntry
                     rules={{
                         validate: (value) =>
-                            value === pwd || 'Passwords do not match',
+                            value === password || 'Passwords do not match',
                     }}
                 />
             </RNView>
 
             <RNView style={styles.inputContainer}>
                 <CustomButton
-                    text={loading ? 'Loading...' : 'Sign In'}
-                    onPress={handleSubmit(onSignInPress)}
+                    text={loading ? 'Loading...' : 'Sign Up'}
+                    onPress={handleSubmit(onSignUpPress)}
                 />
                 <Text style={styles.text}>
                     By registering, you confirm that you accept our{' '}

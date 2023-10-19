@@ -1,6 +1,15 @@
 // Import necessary components and libraries from 'expo-router'
 import { Slot, SplashScreen } from 'expo-router';
 
+import { Amplify } from 'aws-amplify';
+import awsconfig from '@/src/aws-exports';
+Amplify.configure({
+    ...awsconfig,
+    Analytics: {
+        disabled: true,
+    },
+});
+
 // Export ErrorBoundary from 'expo-router'
 export { ErrorBoundary } from 'expo-router';
 

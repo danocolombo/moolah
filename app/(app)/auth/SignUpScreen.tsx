@@ -5,6 +5,7 @@ import {
     Image,
     StyleSheet,
 } from 'react-native';
+import { Link } from 'expo-router';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Screen from '@/common/components/Screen';
@@ -15,7 +16,8 @@ import CustomInput from '@/common/components/CustomInput';
 import CustomButton from '@/common/components/CustomButton';
 import SocialSignInButtons from '@/common/components/SocialSignInButtons';
 import { login } from '@/features/user/userSlice';
-
+const EMAIL_REGEX =
+    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 export default function AuthScreen() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -37,6 +39,12 @@ export default function AuthScreen() {
         //     params: { username: data.username, password: data.password },
         // });
     };
+    const onTermsOfUsePress = () => {
+        console.warn('Terms of Use');
+    };
+    const onPrivacyPolicyPress = () => {
+        console.warn('Privacy Policy');
+    };
     return (
         <Screen
             style={{
@@ -46,38 +54,89 @@ export default function AuthScreen() {
             }}
         >
             <Text fontSize={24} fontFamily='SFHeavy'>
-                Moolah
+                Create your account
             </Text>
             <RNView style={styles.inputContainer}>
                 <CustomInput
                     name='username'
+                    control={control}
                     placeholder='Username'
-                    control={control}
-                    rules={{ required: 'Username is required' }}
-                />
-            </RNView>
-            <RNView style={styles.inputContainer}>
-                <CustomInput
-                    name='password'
-                    placeholder='Password'
-                    secureTextEntry
-                    control={control}
                     rules={{
-                        required: 'Password is required',
+                        required: 'Username is required',
                         minLength: {
                             value: 3,
                             message:
-                                'Password should be minimum 3 characters long',
+                                'Username should be at least 3 characters long',
+                        },
+                        maxLength: {
+                            value: 24,
+                            message:
+                                'Username should be max 24 characters long',
+                        },
+                    }}
+                    inputProps={styles.inputTextBox}
+                />
+
+                <CustomInput
+                    name='email'
+                    control={control}
+                    placeholder='Email'
+                    rules={{
+                        required: 'Email is required',
+                        pattern: {
+                            value: EMAIL_REGEX,
+                            message: 'Email is invalid',
                         },
                     }}
                 />
+
+                <CustomInput
+                    name='password'
+                    control={control}
+                    placeholder='Password'
+                    secureTextEntry
+                    rules={{
+                        required: 'Password is required',
+                        minLength: {
+                            value: 8,
+                            message:
+                                'Password should be at least 8 characters long',
+                        },
+                    }}
+                />
+                <CustomInput
+                    name='password-repeat'
+                    control={control}
+                    placeholder='Repeat Password'
+                    secureTextEntry
+                    rules={{
+                        validate: (value) =>
+                            value === pwd || 'Passwords do not match',
+                    }}
+                />
             </RNView>
+
             <RNView style={styles.inputContainer}>
                 <CustomButton
                     text={loading ? 'Loading...' : 'Sign In'}
                     onPress={handleSubmit(onSignInPress)}
                 />
+                <Text style={styles.text}>
+                    By registering, you confirm that you accept our{' '}
+                    <Text style={styles.link} onPress={onTermsOfUsePress}>
+                        Terms of Use
+                    </Text>{' '}
+                    and{' '}
+                    <Text style={styles.link} onPress={onPrivacyPolicyPress}>
+                        Privacy Policy.
+                    </Text>
+                </Text>
                 <SocialSignInButtons />
+                <RNView style={styles.linkContainer}>
+                    <Link href={{ pathname: 'auth/index' }}>
+                        Back to log in
+                    </Link>
+                </RNView>
             </RNView>
         </Screen>
     );
@@ -96,8 +155,16 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: '70%',
+        alignItems: 'center',
     },
-    inputContainer: {
-        width: '70%',
+    inputTextBox: {
+        minWidth: '100%',
+        fontSize: 24,
+    },
+    link: {
+        color: '#FDB075',
+    },
+    linkContainer: {
+        marginTop: 15,
     },
 });

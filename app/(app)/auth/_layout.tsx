@@ -17,12 +17,24 @@ export default function () {
                 animation: 'slide_from_right',
             }}
         >
+            {/* <Stack.Screen
+                name='index'
+                options={{
+                    headerShown: false,
+                }}
+            />
             <Stack.Screen
                 name='SignUpScreen'
                 options={{
                     headerShown: false,
                 }}
             />
+            <Stack.Screen
+                name='NewPasswordScreen'
+                options={{
+                    headerShown: false,
+                }}
+            /> */}
         </Stack>
     );
 }

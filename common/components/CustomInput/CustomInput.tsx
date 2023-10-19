@@ -8,6 +8,7 @@ const CustomInput = ({
     rules = {},
     placeholder,
     secureTextEntry,
+    inputProps,
 }) => {
     return (
         <Controller

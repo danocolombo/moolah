@@ -3,6 +3,8 @@ import {
     Text as RNText,
     View as RNView,
     Image,
+    Modal,
+    TouchableHighlight,
     StyleSheet,
 } from 'react-native';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -23,22 +25,38 @@ export default function AuthScreen() {
     const { username, email, sub } = useLocalSearchParams();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
+    const [isModalVisible, setModalVisible] = useState(false); // State to control modal visibility
+
     const {
         control,
         handleSubmit,
         formState: { errors },
     } = useForm();
+
     const onSignInPress = async (data) => {
         router.push('/(app)/auth');
     };
-
     const onSubmitPress = async (data) => {
         try {
-            const response = await Auth.confirmSignUp(sub, data.code);
-            console.log('confirmSignUp_reponse', response);
+            Auth.confirmSignUp(username, data.code)
+                .then(() => {
+                    // Account confirmed successfully
+                    setConfirmationMessage('Account confirmed');
+                    setModalVisible(true); // Show the modal
+                })
+                .catch((error) => {
+                    // Error occurred during confirmation
+                    console.error('Confirmation error', error);
+                });
         } catch (error) {
+            console.log('catch error');
             console.log(error);
         }
+    };
+    const closeModal = () => {
+        setModalVisible(false); // Hide the modal
+        router.push('/(app)/(auth)/index');
     };
     console.log('NewPasswordScreen values...');
     console.log('username:', username);
@@ -52,7 +70,16 @@ export default function AuthScreen() {
                 justifyContent: 'center',
             }}
         >
-            <Text style={styles.title}>Change your Password</Text>
+            <Text style={styles.title}>Confirm your Account</Text>
+            <Text
+                style={{
+                    paddingHorizontal: 60,
+                    textAlign: 'center',
+                    paddingVertical: 10,
+                }}
+            >
+                Check your registration email, and enter the code provided.
+            </Text>
             <RNView style={styles.inputContainer}>
                 <CustomInput
                     name='code'
@@ -87,6 +114,19 @@ export default function AuthScreen() {
                     type='TERTIARY'
                 />
             </RNView>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={isModalVisible}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalContainer}>
+                    <Text>{confirmationMessage}</Text>
+                    <TouchableHighlight onPress={closeModal}>
+                        <Text>OK</Text>
+                    </TouchableHighlight>
+                </View>
+            </Modal>
         </Screen>
     );
 }
@@ -119,5 +159,11 @@ const styles = StyleSheet.create({
     },
     linkContainer: {
         marginTop: 15,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
     },
 });

@@ -44,7 +44,7 @@ export default function AuthScreen() {
         setLoading(true);
         let alertPayload;
 
-        await Auth.signIn(data.email, data.password)
+        await Auth.signIn(data.username, data.password)
             .then((user) => {
                 console.log('1');
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
@@ -165,10 +165,10 @@ export default function AuthScreen() {
             </Text>
             <RNView style={styles.inputContainer}>
                 <CustomInput
-                    name='email'
-                    placeholder='email'
+                    name='username'
+                    placeholder='username'
                     control={control}
-                    rules={{ required: 'Email is required' }}
+                    rules={{ required: 'Username is required' }}
                 />
             </RNView>
             <RNView style={styles.inputContainer}>

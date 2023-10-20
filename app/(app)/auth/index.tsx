@@ -43,9 +43,8 @@ export default function AuthScreen() {
         }
         setLoading(true);
         let alertPayload;
-        const username = 'mootwo';
-        const password = 'Password123!';
-        await Auth.signIn(username, password)
+
+        await Auth.signIn(data.email, data.password)
             .then((user) => {
                 console.log('1');
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
@@ -166,10 +165,10 @@ export default function AuthScreen() {
             </Text>
             <RNView style={styles.inputContainer}>
                 <CustomInput
-                    name='username'
-                    placeholder='Username'
+                    name='email'
+                    placeholder='email'
                     control={control}
-                    rules={{ required: 'Username is required' }}
+                    rules={{ required: 'Email is required' }}
                 />
             </RNView>
             <RNView style={styles.inputContainer}>

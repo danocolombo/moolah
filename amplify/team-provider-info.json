@@ -13,7 +13,12 @@
     },
     "categories": {
       "auth": {
-        "moolah": {}
+        "moolah": {
+          "userPoolId": "us-east-1_hznqdyUcl",
+          "userPoolName": "moolah-fed",
+          "webClientId": "6lf1hnqtra6fknj5k77lfrvf93",
+          "nativeClientId": "6lf1hnqtra6fknj5k77lfrvf93"
+        }
       }
     }
   }

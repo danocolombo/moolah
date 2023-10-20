@@ -24,31 +24,45 @@
   },
   "auth": {
     "moolah": {
-      "customAuth": false,
-      "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [
-            "REQUIRES_LOWERCASE",
-            "REQUIRES_NUMBERS",
-            "REQUIRES_SYMBOLS",
-            "REQUIRES_UPPERCASE"
-          ],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [],
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
+      "service": "Cognito",
+      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_moolah_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "moolah"
+        }
+      ]
+    },
+    "AMPLIFY_auth_moolah_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "moolah"
+        }
+      ]
+    },
+    "AMPLIFY_auth_moolah_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "moolah"
+        }
+      ]
+    },
+    "AMPLIFY_auth_moolah_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "moolah"
+        }
+      ]
     }
   }
 }

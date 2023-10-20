@@ -5,7 +5,8 @@ import {
     Image,
     StyleSheet,
 } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
+import { Auth } from 'aws-amplify';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Screen from '@/common/components/Screen';
@@ -19,6 +20,7 @@ import { login } from '@/features/user/userSlice';
 const EMAIL_REGEX =
     /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 export default function AuthScreen() {
+    const { username, email, sub } = useLocalSearchParams();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const {
@@ -31,9 +33,17 @@ export default function AuthScreen() {
     };
 
     const onSubmitPress = async (data) => {
-        console.warn('onSubmitPress');
-        console.log('Code:', data.code);
+        try {
+            const response = await Auth.confirmSignUp(sub, data.code);
+            console.log('confirmSignUp_reponse', response);
+        } catch (error) {
+            console.log(error);
+        }
     };
+    console.log('NewPasswordScreen values...');
+    console.log('username:', username);
+    console.log('email:', email);
+    console.log('sub:', sub);
     return (
         <Screen
             style={{
@@ -50,7 +60,7 @@ export default function AuthScreen() {
                     control={control}
                     rules={{ required: 'Code is required' }}
                 />
-                <CustomInput
+                {/* <CustomInput
                     name='newPassword'
                     placeholder='Enter your new password'
                     secureTextEntry
@@ -63,7 +73,7 @@ export default function AuthScreen() {
                                 'Password should be minimum 3 characters long',
                         },
                     }}
-                />
+                /> */}
 
                 <CustomButton
                     text={loading ? 'Loading...' : 'Submit'}

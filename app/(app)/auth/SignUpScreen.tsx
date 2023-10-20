@@ -5,7 +5,8 @@ import {
     Image,
     StyleSheet,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Auth } from 'aws-amplify';
+import { Link, router } from 'expo-router';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Screen from '@/common/components/Screen';
@@ -24,12 +25,30 @@ export default function AuthScreen() {
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm();
+    const pwd = watch('password');
     const onSignUpPress = async (data) => {
-        console.log('username:', data.username);
-        console.log('email:', data.email);
-        console.log('password:', data.password);
+        const { username, password, email, name } = data;
+        console.log('username:', username);
+        console.log('password:', password);
+        console.log('email:\n', email);
+        try {
+            const response = await Auth.signUp({
+                username,
+                password,
+                attributes: {
+                    email,
+                },
+            });
+            const proceedParams = { username, email, sub: response?.userSub };
+            console.log('response', response);
+            router.push({
+                pathname: '/(app)/auth/NewPasswordScreen',
+                params: proceedParams,
+            });
+        } catch (error) {}
         return;
         // if (loading) {
         //     return;
@@ -115,7 +134,7 @@ export default function AuthScreen() {
                     secureTextEntry
                     rules={{
                         validate: (value) =>
-                            value === password || 'Passwords do not match',
+                            value === pwd || 'Passwords do not match',
                     }}
                 />
             </RNView>

@@ -17,6 +17,7 @@ import CustomButton from '@/common/components/CustomButton';
 import SocialSignInButtons from '@/common/components/SocialSignInButtons';
 import { login } from '@/features/user/userSlice';
 import { router, Link } from 'expo-router';
+import { printObject } from '@/utils/helpers';
 type RouterLinkProps = {
     pathname: string;
     params?: Record<string, string | undefined>;
@@ -46,7 +47,6 @@ export default function AuthScreen() {
 
         await Auth.signIn(data.username, data.password)
             .then((user) => {
-                console.log('1');
                 if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
                     console.log('challenge this');
                     const { requiredAttributes } = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
@@ -73,6 +73,22 @@ export default function AuthScreen() {
                         });
                 } else {
                     console.log('the user is good...');
+                    const signInData = {
+                        signInUserSession: user.signInUserSession,
+                    };
+                    printObject(
+                        'I:66-->accessPayload:\n',
+                        signInData.signInUserSession.accessToken.payload
+                    );
+                    dispatch(
+                        login({
+                            token: signInData.signInUserSession.accessToken
+                                .jwtToken,
+                            accessPayload:
+                                signInData.signInUserSession.accessToken
+                                    .payload,
+                        })
+                    );
                 }
             })
             .catch((e) => {

@@ -42,10 +42,15 @@ export default function AuthScreen() {
                     email,
                 },
             });
-            const proceedParams = { username, email, sub: response?.userSub };
+            const proceedParams = {
+                username,
+                email,
+                sub: response?.userSub,
+                origin: 'SignUpScreen',
+            };
             console.log('response', response);
             router.push({
-                pathname: '/(app)/auth/NewPasswordScreen',
+                pathname: '/(app)/auth/ConfirmScreen',
                 params: proceedParams,
             });
         } catch (error) {}

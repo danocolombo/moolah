@@ -1,0 +1,5 @@
+ios client_id 
+638184561354-as8jeikmk5flousp9hr1bol8p83gdtmd.apps.googleusercontent.com
+
+android client_id
+638184561354-k3vvoe21fcac52pmrjt1ojnb0bufsj64.apps.googleusercontent.com

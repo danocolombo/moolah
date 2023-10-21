@@ -1,6 +1,7 @@
 node_modules/
 .expo/
 dist/
+fortson-guru/
 npm-debug.*
 *.jks
 *.p8

@@ -5,6 +5,7 @@ import {
     Image,
     StyleSheet,
 } from 'react-native';
+
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Auth } from 'aws-amplify';
@@ -27,8 +28,10 @@ type userAttributeProps = {
     email_verified: string;
     preferred_username: string;
 };
+
 export default function AuthScreen() {
     const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(false);
     const {
         control,

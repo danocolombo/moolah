@@ -1,5 +1,5 @@
-import { useDispatch } from 'react-redux';
-import { View as RNView, StyleSheet } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { View as RNView, StyleSheet, Button } from 'react-native';
 import Screen from '@/common/components/Screen';
 import Text from '@/common/components/Text';
 import LogoutButton from '@/features/auth/LogoutButton';
@@ -9,16 +9,25 @@ import { logout } from '@/features/user/userSlice';
 // Define the TabOneScreen component for Tab One
 export default function () {
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.profile);
     const onLogoutPress = () => {
         dispatch(logout({}));
     };
     return (
         <Screen style={styles.container}>
-            <Text fontFamily='SFMedium' style={styles.title}>
-                Tab One
-            </Text>
+            <RNView style={{ paddingBottom: 75 }}>
+                <Text fontFamily='SFMedium' style={styles.title}>
+                    Tab One
+                </Text>
+            </RNView>
+            {user?.firstName && (
+                <Text fontFamily='SFMedium' style={styles.title}>
+                    Hey {user?.firstName}
+                </Text>
+            )}
+
             <RNView style={styles.inputContainer}>
-                <CustomButton text='Logout' onPress={onLogoutPress} />
+                <Button title='Logout' onPress={onLogoutPress} />
             </RNView>
         </Screen>
     );

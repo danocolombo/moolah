@@ -71,6 +71,22 @@ const slice = createSlice({
                 loggedIn: true,
             };
         },
+        saveGoogleUser(state, action) {
+            console.log('saveGoogleUser (slice)');
+            console.log(action.payload);
+            return {
+                ...state,
+                token: action.payload.id,
+                loggedIn: true,
+                profile: {
+                    ...state.profile,
+                    id: action?.payload?.id || '0',
+                    firstName: action?.payload?.given_name || '',
+                    lastName: action?.payload?.family_name || '',
+                    email: action?.payload?.email || '',
+                },
+            };
+        },
         logout(state, payload) {
             state.loggedIn = false; // Set 'loggedIn' to false on logout
         },
@@ -79,6 +95,6 @@ const slice = createSlice({
 
 const userReducer = slice.reducer;
 
-export const { login, logout } = slice.actions;
+export const { login, saveGoogleUser, logout } = slice.actions;
 
 export default userReducer;

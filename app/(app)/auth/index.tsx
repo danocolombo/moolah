@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Text as RNText,
     View as RNView,
     Image,
     StyleSheet,
+    Button,
 } from 'react-native';
 
 import { useDispatch } from 'react-redux';
@@ -15,10 +16,12 @@ import View from '@/common/components/View';
 import Logo from '@/assets/images/logo.png';
 import CustomInput from '@/common/components/CustomInput';
 import CustomButton from '@/common/components/CustomButton';
+import * as Google from 'expo-auth-session/providers/google';
 import SocialSignInButtons from '@/common/components/SocialSignInButtons';
 import { login } from '@/features/user/userSlice';
 import { router, Link } from 'expo-router';
 import { printObject } from '@/utils/helpers';
+import { saveGoogleUser } from '@/features/user/userSlice';
 type RouterLinkProps = {
     pathname: string;
     params?: Record<string, string | undefined>;
@@ -31,8 +34,46 @@ type userAttributeProps = {
 
 export default function AuthScreen() {
     const dispatch = useDispatch();
-
+    const [token, setToken] = useState('');
+    const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(false);
+    const googleIosClientId = process.env.GOOGLE_IOS_CLIENT_ID;
+    const googleAndroidClientId = process.env.GOOGLE_ANDROID_CLIENT_ID;
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        iosClientId: googleIosClientId,
+        androidClientId: googleAndroidClientId,
+    });
+    useEffect(() => {
+        handleEffect();
+    }, [response, token]);
+
+    async function handleEffect() {
+        if (response?.type === 'success') {
+            await getUserInfo(response.authentication.accessToken);
+        }
+    }
+    const getUserInfo = async (token) => {
+        if (!token) return;
+        try {
+            const response = await fetch(
+                'https://www.googleapis.com/userinfo/v2/me',
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            const user = await response.json();
+            dispatch(saveGoogleUser(user));
+            setUserInfo(user);
+            if (user) {
+                console.log(JSON.stringify(user, null, 2));
+            }
+        } catch (error) {
+            // Add your own error handler here
+            console.error('getUserInfo catch:\n', error);
+        }
+    };
+
     const {
         control,
         handleSubmit,
@@ -125,30 +166,6 @@ export default function AuthScreen() {
             });
 
         setLoading(false);
-
-        //     console.log('done with loginUser dispatch');
-        // } catch (error) {
-        //     switch (error.code) {
-        //         case 'UserNotFoundException':
-        //             setLoginError(error.message);
-        //             setShowLoginError(true);
-        //             break;
-        //         case 'PasswordResetRequiredException':
-        //             setLoginError(error.message);
-        //             setShowLoginError(true);
-        //             break;
-        //         case 'NotAuthorizedException':
-        //             setLoginError(error.message);
-        //             setShowLoginError(true);
-        //             break;
-        //         default:
-        //             setLoginError(error.message);
-        //             setShowLoginError(true);
-        //             break;
-        //     }
-        // } finally {
-        //     setLoading(false); // Set loading to false after the try/catch block
-        // }
     };
 
     const onSignInPress2 = async (data) => {
@@ -164,6 +181,28 @@ export default function AuthScreen() {
         //     params: { username: data.username, password: data.password },
         // });
     };
+    const onGooglePress = async () => {
+        setLoading(true);
+        const googleSignInResult = await promptAsync();
+
+        if (googleSignInResult) {
+            if (googleSignInResult.type === 'success') {
+                // Handle Google Sign-In success
+                await getUserInfo(
+                    googleSignInResult?.authentication?.accessToken
+                );
+            } else if (googleSignInResult.type === 'error') {
+                // Handle Google Sign-In error
+                console.log('Google Sign-In error:', googleSignInResult.error);
+            }
+        } else {
+            // Handle the case where googleSignInResult is null
+            console.log('Google Sign-In result is null');
+        }
+
+        setLoading(false);
+    };
+
     const onForgotPasswordPress = () => {
         router.replace('/ForgotPasswordScreen');
     };
@@ -216,7 +255,14 @@ export default function AuthScreen() {
                         Forgot password?
                     </Link>
                 </RNView>
-                <SocialSignInButtons />
+                <RNView style={styles.linkContainer}>
+                    <Button
+                        title='Sign in with Google'
+                        disabled={!request}
+                        onPress={onGooglePress}
+                    />
+                </RNView>
+                {/* <SocialSignInButtons /> */}
                 <RNView style={styles.linkContainer}>
                     <Link href={{ pathname: 'auth/SignUpScreen' }}>
                         Don't have an account? Create one

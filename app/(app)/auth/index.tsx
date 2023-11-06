@@ -26,11 +26,11 @@ type RouterLinkProps = {
     pathname: string;
     params?: Record<string, string | undefined>;
 };
-type userAttributeProps = {
-    email: string;
-    email_verified: string;
-    preferred_username: string;
-};
+// type userAttributeProps = {
+//     email: string;
+//     email_verified: string;
+//     preferred_username: string;
+// };
 
 export default function AuthScreen() {
     const dispatch = useDispatch();

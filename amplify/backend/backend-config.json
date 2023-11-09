@@ -1,68 +1,28 @@
 {
-  "api": {
-    "moolah": {
-      "dependsOn": [],
-      "output": {
-        "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AWS_IAM"
-            }
-          ],
-          "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 30,
-              "description": "api key description"
-            },
-            "authenticationType": "API_KEY"
-          }
-        }
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "AppSync"
-    }
-  },
   "auth": {
-    "moolah": {
+    "moolah2cbc22587": {
       "service": "Cognito",
-      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
-      "customAuth": false
-    }
-  },
-  "parameters": {
-    "AMPLIFY_auth_moolah_nativeClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "moolah"
-        }
-      ]
-    },
-    "AMPLIFY_auth_moolah_userPoolId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "moolah"
-        }
-      ]
-    },
-    "AMPLIFY_auth_moolah_userPoolName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "moolah"
-        }
-      ]
-    },
-    "AMPLIFY_auth_moolah_webClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "moolah"
-        }
-      ]
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      }
     }
   }
 }

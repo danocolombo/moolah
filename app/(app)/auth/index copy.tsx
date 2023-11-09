@@ -9,7 +9,7 @@ import {
 
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Auth, Hub } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import Screen from '@/common/components/Screen';
 import Text from '@/common/components/Text';
 import View from '@/common/components/View';
@@ -37,52 +37,48 @@ export default function AuthScreen() {
     const [token, setToken] = useState('');
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(false);
+    const googleIosClientId = process.env.GOOGLE_IOS_CLIENT_ID;
+    const googleAndroidClientId = process.env.GOOGLE_ANDROID_CLIENT_ID;
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        iosClientId: googleIosClientId,
+        androidClientId: googleAndroidClientId,
+    });
+    useEffect(() => {
+        handleEffect();
+    }, [response, token]);
 
-    //todo===================================================
-    //todo these are amplify federated
-    const [user, setUser] = useState(null);
-    const [customState, setCustomState] = useState(null);
-    //todo===================================================
-    // const googleIosClientId = process.env.GOOGLE_IOS_CLIENT_ID;
-    // const googleAndroidClientId = process.env.GOOGLE_ANDROID_CLIENT_ID;
-    // const [request, response, promptAsync] = Google.useAuthRequest({
-    //     iosClientId: googleIosClientId,
-    //     androidClientId: googleAndroidClientId,
-    // });
+    async function handleEffect() {
+        if (response?.type === 'success') {
+            await getUserInfo(response.authentication.accessToken);
+        }
+    }
+    const getUserInfo = async (token) => {
+        if (!token) return;
+        try {
+            const response = await fetch(
+                'https://www.googleapis.com/userinfo/v2/me',
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            const user = await response.json();
+            dispatch(saveGoogleUser(user));
+            setUserInfo(user);
+            if (user) {
+                console.log(JSON.stringify(user, null, 2));
+            }
+        } catch (error) {
+            // Add your own error handler here
+            console.error('getUserInfo catch:\n', error);
+        }
+    };
 
     const {
         control,
         handleSubmit,
         formState: { errors },
     } = useForm();
-
-    //todo===================================================
-    //todo this is for amplify federated implementation
-    useEffect(() => {
-        const unsubscribe = Hub.listen(
-            'auth',
-            ({ payload: { event, data } }) => {
-                switch (event) {
-                    case 'signIn':
-                        setUser(data);
-                        break;
-                    case 'signOut':
-                        setUser(null);
-                        break;
-                    case 'customOAuthState':
-                        setCustomState(data);
-                }
-            }
-        );
-
-        Auth.currentAuthenticatedUser()
-            .then((currentUser) => setUser(currentUser))
-            .catch(() => console.log('Not signed in'));
-
-        return unsubscribe;
-    }, []);
-    //todo end of implementation
-    //todo===================================================
 
     const onSignInPress = async (data) => {
         console.log('onSignInPressed');
@@ -172,9 +168,38 @@ export default function AuthScreen() {
         setLoading(false);
     };
 
+    const onSignInPress2 = async (data) => {
+        // if (loading) {
+        //     return;
+        // }
+        // setLoading(true);
+        dispatch(login({ username: data.username, password: data.password }));
+        // setLoading(false);
+        // const response = Auth.signIn('username_value', 'password');
+        // router.push({
+        //     pathname: '/(auth)/main',
+        //     params: { username: data.username, password: data.password },
+        // });
+    };
     const onGooglePress = async () => {
         setLoading(true);
-        console.log('burp');
+        const googleSignInResult = await promptAsync();
+
+        if (googleSignInResult) {
+            if (googleSignInResult.type === 'success') {
+                // Handle Google Sign-In success
+                await getUserInfo(
+                    googleSignInResult?.authentication?.accessToken
+                );
+            } else if (googleSignInResult.type === 'error') {
+                // Handle Google Sign-In error
+                console.log('Google Sign-In error:', googleSignInResult.error);
+            }
+        } else {
+            // Handle the case where googleSignInResult is null
+            console.log('Google Sign-In result is null');
+        }
+
         setLoading(false);
     };
 
@@ -233,6 +258,7 @@ export default function AuthScreen() {
                 <RNView style={styles.linkContainer}>
                     <Button
                         title='Sign in with Google'
+                        disabled={!request}
                         onPress={onGooglePress}
                     />
                 </RNView>
@@ -246,13 +272,7 @@ export default function AuthScreen() {
         </Screen>
     );
 }
-//You can catch errors by listening to the signIn-failure event
-Hub.listen('auth', (data) => {
-    if (data.payload.event === 'signIn_failure') {
-        // Do something here
-        printObject('I:254-->data.payload:\n', data.payload);
-    }
-});
+
 const styles = StyleSheet.create({
     logoContainer: {
         width: '100%',

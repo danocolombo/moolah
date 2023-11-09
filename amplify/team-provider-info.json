@@ -1,24 +1,19 @@
 {
-  "staging": {
+  "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-moolah-staging-230706-authRole",
-      "UnauthRoleArn": "arn:aws:iam::226036691416:role/amplify-moolah-staging-230706-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::226036691416:role/amplify-moolah-staging-230706-authRole",
+      "AuthRoleName": "amplify-moolah2-dev-200522-authRole",
+      "UnauthRoleArn": "arn:aws:iam::226036691416:role/amplify-moolah2-dev-200522-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::226036691416:role/amplify-moolah2-dev-200522-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-moolah-staging-230706-deployment",
-      "UnauthRoleName": "amplify-moolah-staging-230706-unauthRole",
-      "StackName": "amplify-moolah-staging-230706",
-      "StackId": "arn:aws:cloudformation:us-east-1:226036691416:stack/amplify-moolah-staging-230706/8fad4450-6baf-11ee-ae00-0e5979a7a369",
-      "AmplifyAppId": "d3c7uyfj0cd3fn"
+      "DeploymentBucketName": "amplify-moolah2-dev-200522-deployment",
+      "UnauthRoleName": "amplify-moolah2-dev-200522-unauthRole",
+      "StackName": "amplify-moolah2-dev-200522",
+      "StackId": "arn:aws:cloudformation:us-east-1:226036691416:stack/amplify-moolah2-dev-200522/7dd0c850-7c40-11ee-b316-12358945cad1",
+      "AmplifyAppId": "dghjc8l1axhzb"
     },
     "categories": {
       "auth": {
-        "moolah": {
-          "userPoolId": "us-east-1_hznqdyUcl",
-          "userPoolName": "moolah-fed",
-          "webClientId": "6lf1hnqtra6fknj5k77lfrvf93",
-          "nativeClientId": "6lf1hnqtra6fknj5k77lfrvf93"
-        }
+        "moolah2cbc22587": {}
       }
     }
   }

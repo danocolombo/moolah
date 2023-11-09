@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { View as RNView, StyleSheet, Button } from 'react-native';
+import { View as RNView, StyleSheet, Button, FlatList } from 'react-native';
 import Screen from '@/common/components/Screen';
 import Text from '@/common/components/Text';
 import LogoutButton from '@/features/auth/LogoutButton';
 import CustomButton from '@/common/components/CustomButton';
 import { logout } from '@/features/user/userSlice';
+import InstitutionListCard from '@/components/InstitutionListCard';
+import institutionList from '@/assets/data/institutions';
 
 // Define the TabOneScreen component for Tab One
 export default function () {
@@ -15,10 +17,13 @@ export default function () {
     };
     return (
         <Screen style={styles.container}>
-            <RNView style={{ paddingBottom: 75 }}>
-                <Text fontFamily='SFMedium' style={styles.title}>
-                    Tab One
-                </Text>
+            <RNView style={styles.listContainer}>
+                <FlatList
+                    data={institutionList}
+                    renderItem={({ item }) => (
+                        <InstitutionListCard institution={item} />
+                    )}
+                />
             </RNView>
             {user?.firstName && (
                 <Text fontFamily='SFMedium' style={styles.title}>
@@ -26,7 +31,7 @@ export default function () {
                 </Text>
             )}
 
-            <RNView style={styles.inputContainer}>
+            <RNView style={styles.logoutContainer}>
                 <Button title='Logout' onPress={onLogoutPress} />
             </RNView>
         </Screen>
@@ -43,5 +48,14 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: '50%',
+    },
+    listContainer: {
+        marginTop: 20,
+        width: '50%',
+    },
+    logoutContainer: {
+        width: '50%',
+        marginBottom: 25,
+        marginTop: 'auto',
     },
 });

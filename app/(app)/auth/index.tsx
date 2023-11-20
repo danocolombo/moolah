@@ -230,13 +230,7 @@ export default function AuthScreen() {
                         Forgot password?
                     </Link>
                 </RNView>
-                <RNView style={styles.linkContainer}>
-                    <Button
-                        title='Sign in with Google'
-                        onPress={onGooglePress}
-                    />
-                </RNView>
-                {/* <SocialSignInButtons /> */}
+
                 <RNView style={styles.linkContainer}>
                     <Link href={{ pathname: 'auth/SignUpScreen' }}>
                         Don't have an account? Create one

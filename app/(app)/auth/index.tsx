@@ -124,10 +124,11 @@ export default function AuthScreen() {
                     const signInData = {
                         signInUserSession: user.signInUserSession,
                     };
-                    printObject(
-                        'I:66-->accessPayload:\n',
-                        signInData.signInUserSession.accessToken.payload
-                    );
+                    printObject('auth_I:127-->signInData:\n', signInData);
+                    // printObject(
+                    //     'I:66-->accessPayload:\n',
+                    //     signInData.signInUserSession.accessToken.payload
+                    // );
                     dispatch(
                         login({
                             token: signInData.signInUserSession.accessToken

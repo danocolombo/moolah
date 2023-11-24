@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-moolah2-dev-200522-unauthRole",
       "StackName": "amplify-moolah2-dev-200522",
       "StackId": "arn:aws:cloudformation:us-east-1:226036691416:stack/amplify-moolah2-dev-200522/7dd0c850-7c40-11ee-b316-12358945cad1",
-      "AmplifyAppId": "dghjc8l1axhzb"
+      "AmplifyAppId": "dghjc8l1axhzb",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-moolah2-dev-200522-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
